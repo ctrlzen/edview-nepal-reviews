@@ -27,7 +27,7 @@ export const Route = createFileRoute("/colleges/$slug")({
 });
 
 function Profile() {
-  const { college } = Route.useLoaderData();
+  const { college } = Route.useLoaderData() as { college: College };
   const { reviews, votes, vote } = useReviews();
 
   const collegeReviews = useMemo(
