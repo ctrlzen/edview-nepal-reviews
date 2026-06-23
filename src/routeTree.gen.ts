@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubmitRouteImport } from './routes/submit'
 import { Route as CollegesRouteImport } from './routes/colleges'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 
@@ -22,6 +23,11 @@ const SubmitRoute = SubmitRouteImport.update({
 const CollegesRoute = CollegesRouteImport.update({
   id: '/colleges',
   path: '/colleges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const CollegesSlugRoute = CollegesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/colleges' | '/submit' | '/colleges/$slug'
+  fullPaths: '/' | '/analytics' | '/colleges' | '/submit' | '/colleges/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/colleges' | '/submit' | '/colleges/$slug'
-  id: '__root__' | '/' | '/colleges' | '/submit' | '/colleges/$slug'
+  to: '/' | '/analytics' | '/colleges' | '/submit' | '/colleges/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/colleges'
+    | '/submit'
+    | '/colleges/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   CollegesRoute: typeof CollegesRouteWithChildren
   SubmitRoute: typeof SubmitRoute
 }
@@ -82,6 +98,13 @@ declare module '@tanstack/react-router' {
       path: '/colleges'
       fullPath: '/colleges'
       preLoaderRoute: typeof CollegesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -115,6 +138,7 @@ const CollegesRouteWithChildren = CollegesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
   CollegesRoute: CollegesRouteWithChildren,
   SubmitRoute: SubmitRoute,
 }
