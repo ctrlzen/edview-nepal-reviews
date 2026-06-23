@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CollegesRouteImport } from './routes/colleges'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 
 const CollegesRoute = CollegesRouteImport.update({
   id: '/colleges',
@@ -22,31 +23,39 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollegesSlugRoute = CollegesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CollegesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/colleges': typeof CollegesRoute
+  '/colleges': typeof CollegesRouteWithChildren
+  '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/colleges': typeof CollegesRoute
+  '/colleges': typeof CollegesRouteWithChildren
+  '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/colleges': typeof CollegesRoute
+  '/colleges': typeof CollegesRouteWithChildren
+  '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/colleges'
+  fullPaths: '/' | '/colleges' | '/colleges/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/colleges'
-  id: '__root__' | '/' | '/colleges'
+  to: '/' | '/colleges' | '/colleges/$slug'
+  id: '__root__' | '/' | '/colleges' | '/colleges/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CollegesRoute: typeof CollegesRoute
+  CollegesRoute: typeof CollegesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +74,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/colleges/$slug': {
+      id: '/colleges/$slug'
+      path: '/$slug'
+      fullPath: '/colleges/$slug'
+      preLoaderRoute: typeof CollegesSlugRouteImport
+      parentRoute: typeof CollegesRoute
+    }
   }
 }
 
+interface CollegesRouteChildren {
+  CollegesSlugRoute: typeof CollegesSlugRoute
+}
+
+const CollegesRouteChildren: CollegesRouteChildren = {
+  CollegesSlugRoute: CollegesSlugRoute,
+}
+
+const CollegesRouteWithChildren = CollegesRoute._addFileChildren(
+  CollegesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CollegesRoute: CollegesRoute,
+  CollegesRoute: CollegesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
