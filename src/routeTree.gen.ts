@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubmitRouteImport } from './routes/submit'
 import { Route as CollegesRouteImport } from './routes/colleges'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 
+const SubmitRoute = SubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CollegesRoute = CollegesRouteImport.update({
   id: '/colleges',
   path: '/colleges',
@@ -32,34 +38,45 @@ const CollegesSlugRoute = CollegesSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/colleges': typeof CollegesRouteWithChildren
+  '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/colleges': typeof CollegesRouteWithChildren
+  '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/colleges': typeof CollegesRouteWithChildren
+  '/submit': typeof SubmitRoute
   '/colleges/$slug': typeof CollegesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/colleges' | '/colleges/$slug'
+  fullPaths: '/' | '/colleges' | '/submit' | '/colleges/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/colleges' | '/colleges/$slug'
-  id: '__root__' | '/' | '/colleges' | '/colleges/$slug'
+  to: '/' | '/colleges' | '/submit' | '/colleges/$slug'
+  id: '__root__' | '/' | '/colleges' | '/submit' | '/colleges/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CollegesRoute: typeof CollegesRouteWithChildren
+  SubmitRoute: typeof SubmitRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/submit': {
+      id: '/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof SubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/colleges': {
       id: '/colleges'
       path: '/colleges'
@@ -99,6 +116,7 @@ const CollegesRouteWithChildren = CollegesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CollegesRoute: CollegesRouteWithChildren,
+  SubmitRoute: SubmitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
