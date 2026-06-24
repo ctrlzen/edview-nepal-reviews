@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, BarChart3 } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -15,7 +15,14 @@ export function Navbar() {
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <NavLink to="/colleges">Colleges</NavLink>
-          <NavLink to="/analytics">Analytics</NavLink>
+          <Link
+            to="/analytics"
+            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+            activeProps={{ className: "text-brand" }}
+          >
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </Link>
           <NavLink to="/submit">Write a review</NavLink>
         </nav>
         <Link
@@ -57,3 +64,4 @@ export function Footer() {
     </footer>
   );
 }
+
