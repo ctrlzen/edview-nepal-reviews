@@ -40,6 +40,7 @@ function Profile() {
   const overall = collegeReviews.length
     ? collegeReviews.reduce((s, r) => s + avgOverall(r.ratings), 0) / collegeReviews.length
     : 0;
+  const recPct = recommendationPct(collegeReviews);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
@@ -47,11 +48,30 @@ function Profile() {
         <ArrowLeft className="h-4 w-4" /> All colleges
       </Link>
 
+      {/* Cover */}
+      <div className="relative mt-6 h-44 overflow-hidden rounded-3xl border border-border shadow-soft md:h-56">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(135deg, oklch(0.42 0.11 168) 0%, oklch(0.55 0.13 168) 45%, oklch(0.78 0.13 65) 100%)",
+          }}
+        />
+        <div className="surface-grid absolute inset-0 opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+        <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between text-brand-foreground">
+          <div className="font-display text-2xl italic md:text-3xl">{college.location}</div>
+          <span className="hidden rounded-full bg-background/20 px-3 py-1 text-xs font-medium backdrop-blur md:inline-flex">
+            Est. {college.established}
+          </span>
+        </div>
+      </div>
+
       {/* Header */}
-      <header className="mt-6 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card to-muted/60 p-8 shadow-soft md:p-10">
+      <header className="-mt-10 overflow-hidden rounded-3xl border border-border bg-card p-8 shadow-soft md:p-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-5">
-            <div className="grid h-20 w-20 place-items-center rounded-2xl bg-brand text-2xl font-semibold text-brand-foreground shadow-elevated">
+            <div className="grid h-20 w-20 flex-none place-items-center rounded-2xl bg-brand text-2xl font-semibold text-brand-foreground shadow-elevated">
               {college.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
             </div>
             <div>
@@ -65,17 +85,23 @@ function Profile() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-background p-5 text-center md:min-w-56">
-            <div className="font-display text-6xl text-brand leading-none">{overall.toFixed(1)}</div>
-            <div className="mt-2 flex justify-center"><Stars value={overall} size={18} /></div>
-            <div className="mt-1 text-xs text-muted-foreground">{collegeReviews.length} student reviews</div>
-            <Link
-              to="/submit"
-              search={{ college: college.slug }}
-              className="mt-4 inline-flex h-9 w-full items-center justify-center gap-1.5 rounded-full bg-foreground text-xs font-medium text-background hover:bg-foreground/90"
-            >
-              <PenLine className="h-3.5 w-3.5" /> Write a review
-            </Link>
+          <div className="grid grid-cols-2 gap-3 md:min-w-72">
+            <div className="rounded-2xl border border-border bg-background p-4 text-center">
+              <div className="font-display text-5xl text-brand leading-none">{overall.toFixed(1)}</div>
+              <div className="mt-2 flex justify-center"><Stars value={overall} size={14} /></div>
+              <div className="mt-1 text-[11px] text-muted-foreground">{collegeReviews.length} reviews</div>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-4 text-center">
+              <div className="font-display text-5xl text-brand leading-none">{recPct}%</div>
+              <div className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">would recommend</div>
+              <Link
+                to="/submit"
+                search={{ college: college.slug }}
+                className="mt-3 inline-flex h-8 w-full items-center justify-center gap-1.5 rounded-full bg-foreground text-[11px] font-medium text-background hover:bg-foreground/90"
+              >
+                <PenLine className="h-3 w-3" /> Review
+              </Link>
+            </div>
           </div>
         </div>
       </header>
