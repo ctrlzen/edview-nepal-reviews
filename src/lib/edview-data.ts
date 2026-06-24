@@ -29,6 +29,11 @@ export type Review = {
   ratings: Ratings;
   helpful: number;
   notHelpful: number;
+  studentType?: string;
+  pros?: string[];
+  cons?: string[];
+  advice?: string;
+  recommend?: boolean;
 };
 
 export type College = {
