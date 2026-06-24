@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
-import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine } from "lucide-react";
-import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, type Category, type College } from "@/lib/edview-data";
+import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine, Sparkles, AlertCircle, Lightbulb } from "lucide-react";
+import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College } from "@/lib/edview-data";
 import { useReviews, applyVotes } from "@/lib/edview-store";
 import { RatingPill, Stars } from "@/components/edview/Stars";
 
