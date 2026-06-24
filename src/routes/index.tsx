@@ -38,11 +38,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
-  const totalReviews = SEED_REVIEWS.length;
-  const allAvg =
-    SEED_REVIEWS.reduce((s, r) => s + avgOverall(r.ratings), 0) /
-    SEED_REVIEWS.length;
-  const helpfulVotes = SEED_REVIEWS.reduce((s, r) => s + r.helpful, 0);
+
 
   const featured = COLLEGES.slice(0, 3).map((c) => {
     const rs = SEED_REVIEWS.filter((r) => r.collegeSlug === c.slug);
