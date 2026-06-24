@@ -163,6 +163,44 @@ function Profile() {
                   <h3 className="mt-4 text-base font-semibold leading-snug">{r.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{r.body}</p>
 
+                  {(r.pros?.length || r.cons?.length) && (
+                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                      {r.pros && r.pros.length > 0 && (
+                        <div className="rounded-xl border border-border bg-brand-soft/40 p-3">
+                          <div className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-brand">
+                            <Sparkles className="h-3 w-3" /> Pros
+                          </div>
+                          <ul className="space-y-1 text-xs text-foreground">
+                            {r.pros.map((p) => (
+                              <li key={p} className="flex gap-1.5"><span className="text-brand">+</span>{p}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {r.cons && r.cons.length > 0 && (
+                        <div className="rounded-xl border border-border bg-accent/40 p-3">
+                          <div className="mb-1.5 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-foreground">
+                            <AlertCircle className="h-3 w-3" /> Cons
+                          </div>
+                          <ul className="space-y-1 text-xs text-foreground">
+                            {r.cons.map((c) => (
+                              <li key={c} className="flex gap-1.5"><span>−</span>{c}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {r.advice && (
+                    <div className="mt-3 rounded-xl border border-dashed border-border bg-muted/60 p-3 text-xs">
+                      <div className="mb-1 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <Lightbulb className="h-3 w-3" /> Advice for future students
+                      </div>
+                      <p className="text-foreground">{r.advice}</p>
+                    </div>
+                  )}
+
                   <div className="mt-4 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
                     {CATEGORIES.map(({ key, label }) => (
                       <div key={key} className="flex items-center justify-between rounded-lg bg-muted px-2.5 py-1.5 text-xs">
