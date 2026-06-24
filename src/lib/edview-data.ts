@@ -29,6 +29,11 @@ export type Review = {
   ratings: Ratings;
   helpful: number;
   notHelpful: number;
+  studentType?: string;
+  pros?: string[];
+  cons?: string[];
+  advice?: string;
+  recommend?: boolean;
 };
 
 export type College = {
@@ -200,7 +205,57 @@ const reviewSeeds: Array<Omit<Review, "id">> = [
   { collegeSlug: "ace-institute-of-management", author: "Pooja N.", program: "BBA-BI", year: "2024", date: "2025-02-18", title: "Demanding undergrad, great prep", body: "BBA-BI keeps you on your toes. Career office actually places students.", ratings: { academics: 5, teachers: 4, facilities: 5, studentLife: 4, careerSupport: 5, valueForMoney: 3 }, helpful: 21, notHelpful: 2 },
 ];
 
-export const SEED_REVIEWS: Review[] = reviewSeeds.map((r, i) => ({ ...r, id: `seed-${i + 1}` }));
+export const SEED_REVIEWS: Review[] = reviewSeeds.map((r, i) => {
+  const enriched: Review = { ...r, id: `seed-${i + 1}` };
+  // Attach realistic pros/cons/advice/student-type/recommend defaults.
+  const avg = avgOverall(enriched.ratings);
+  if (enriched.recommend === undefined) enriched.recommend = avg >= 3.8;
+  if (!enriched.studentType) {
+    enriched.studentType = enriched.program.startsWith("+2")
+      ? "+2 graduate"
+      : enriched.program.includes("A-Level") || enriched.program.includes("IB")
+        ? "A-Level / IB graduate"
+        : "Undergraduate student";
+  }
+  if (!enriched.pros) {
+    enriched.pros = pickThemes(enriched.ratings, true);
+  }
+  if (!enriched.cons) {
+    enriched.cons = pickThemes(enriched.ratings, false);
+  }
+  if (!enriched.advice) {
+    enriched.advice = avg >= 4
+      ? "Get involved early — clubs, projects and faculty office hours pay off."
+      : "Visit the campus, talk to current students and weigh tuition against outcomes.";
+  }
+  return enriched;
+});
+
+function pickThemes(r: Ratings, positive: boolean): string[] {
+  const POS: Record<Category, string> = {
+    academics: "Strong academic rigor",
+    teachers: "Supportive, knowledgeable teachers",
+    facilities: "Modern, well-kept facilities",
+    studentLife: "Active clubs and student life",
+    careerSupport: "Real career and placement support",
+    valueForMoney: "Great value for the tuition",
+  };
+  const NEG: Record<Category, string> = {
+    academics: "Coursework pace can feel uneven",
+    teachers: "Teaching quality varies by subject",
+    facilities: "Cafeteria and seating need work",
+    studentLife: "Few extracurricular options",
+    careerSupport: "Career counseling could improve",
+    valueForMoney: "Tuition feels high for what you get",
+  };
+  const items = (Object.keys(r) as Category[])
+    .map((k) => ({ k, v: r[k] }))
+    .sort((a, b) => (positive ? b.v - a.v : a.v - b.v))
+    .slice(0, positive ? 3 : 2)
+    .filter((x) => (positive ? x.v >= 4 : x.v <= 3))
+    .map((x) => (positive ? POS[x.k] : NEG[x.k]));
+  return items.length ? items : positive ? ["Solid overall experience"] : ["No major concerns reported"];
+}
 
 export function avgOverall(r: Ratings): number {
   const vals = Object.values(r);
@@ -215,6 +270,12 @@ export function collegeAverages(reviews: Review[]): Ratings {
   }
   (Object.keys(acc) as Category[]).forEach((k) => (acc[k] = +(acc[k] / reviews.length).toFixed(2)));
   return acc;
+}
+
+export function recommendationPct(reviews: Review[]): number {
+  if (!reviews.length) return 0;
+  const rec = reviews.filter((r) => (r.recommend ?? avgOverall(r.ratings) >= 3.8)).length;
+  return Math.round((rec / reviews.length) * 100);
 }
 
 export function getCollege(slug: string) {
