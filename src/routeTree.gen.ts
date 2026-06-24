@@ -9,20 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SubmitRouteImport } from './routes/submit'
-import { Route as CollegesRouteImport } from './routes/colleges'
-import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as CollegesRouteImport } from './routes/colleges'
+import { Route as SubmitRouteImport } from './routes/submit'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 
-const SubmitRoute = SubmitRouteImport.update({
-  id: '/submit',
-  path: '/submit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CollegesRoute = CollegesRouteImport.update({
-  id: '/colleges',
-  path: '/colleges',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
@@ -30,9 +25,14 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const CollegesRoute = CollegesRouteImport.update({
+  id: '/colleges',
+  path: '/colleges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SubmitRoute = SubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CollegesSlugRoute = CollegesSlugRouteImport.update({
@@ -86,18 +86,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/submit': {
-      id: '/submit'
-      path: '/submit'
-      fullPath: '/submit'
-      preLoaderRoute: typeof SubmitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/colleges': {
-      id: '/colleges'
-      path: '/colleges'
-      fullPath: '/colleges'
-      preLoaderRoute: typeof CollegesRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analytics': {
@@ -107,11 +100,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/colleges': {
+      id: '/colleges'
+      path: '/colleges'
+      fullPath: '/colleges'
+      preLoaderRoute: typeof CollegesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/submit': {
+      id: '/submit'
+      path: '/submit'
+      fullPath: '/submit'
+      preLoaderRoute: typeof SubmitRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/colleges/$slug': {
