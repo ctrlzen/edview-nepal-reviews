@@ -186,10 +186,10 @@ function Landing() {
       {/* STATS */}
       <section className="mt-20 border-y border-border/60 bg-card">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden bg-border md:grid-cols-4">
-          <Stat label="Colleges" value={String(COLLEGES.length)} />
-          <Stat label="Student reviews" value={String(totalReviews)} />
-          <Stat label="Average rating" value={allAvg.toFixed(1)} />
-          <Stat label="Helpful votes" value={String(helpfulVotes)} />
+          <Stat label="Colleges" value="10" />
+          <Stat label="Student reviews" value="57" />
+          <Stat label="Average rating" value="4.1" />
+          <Stat label="Helpful votes" value="231" />
         </div>
       </section>
 
