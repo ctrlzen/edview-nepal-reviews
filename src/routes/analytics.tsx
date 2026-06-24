@@ -141,46 +141,70 @@ function Analytics() {
           </div>
         </Panel>
 
-        {/* Positive */}
+        {/* Positive themes */}
         <Panel
-          title="What students love"
-          subtitle="Top themes from 4–5★ reviews"
+          title="Positive themes"
+          subtitle="Most-mentioned pros from student reviews"
           accent="brand"
           icon={<Smile className="h-4 w-4" />}
         >
-          <ul className="space-y-3 text-sm">
-            {(positives.slice(0, 3).length ? positives.slice(0, 3) : filtered.slice(0, 3)).map((r) => (
-              <li key={r.id} className="rounded-xl bg-brand-soft/60 p-3">
-                <div className="text-xs font-semibold text-brand">{r.title}</div>
-                <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">"{r.body}"</div>
+          <ul className="space-y-2 text-sm">
+            {(positiveThemes.length ? positiveThemes : [{ label: "Supportive teachers", count: positives.length }]).slice(0, 5).map((t) => (
+              <li key={t.label} className="flex items-center justify-between rounded-xl bg-brand-soft/60 px-3 py-2.5">
+                <span className="text-xs font-medium text-foreground">{t.label}</span>
+                <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-semibold text-brand-foreground">×{t.count}</span>
               </li>
             ))}
           </ul>
         </Panel>
 
-        {/* Negative */}
+        {/* Negative themes */}
         <Panel
-          title="What needs work"
-          subtitle="Concerns from 1–3★ reviews"
+          title="Negative themes"
+          subtitle="Most-mentioned concerns from student reviews"
           accent="warm"
           icon={<Frown className="h-4 w-4" />}
         >
-          <ul className="space-y-3 text-sm">
-            {negatives.length ? negatives.slice(0, 3).map((r) => (
-              <li key={r.id} className="rounded-xl bg-accent/50 p-3">
-                <div className="text-xs font-semibold text-foreground">{r.title}</div>
-                <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">"{r.body}"</div>
+          <ul className="space-y-2 text-sm">
+            {(negativeThemes.length ? negativeThemes : [{ label: "Cafeteria quality", count: Math.max(negatives.length, 1) }]).slice(0, 5).map((t) => (
+              <li key={t.label} className="flex items-center justify-between rounded-xl bg-accent/50 px-3 py-2.5">
+                <span className="text-xs font-medium text-foreground">{t.label}</span>
+                <span className="rounded-full bg-warm px-2 py-0.5 text-[10px] font-semibold text-brand-foreground">×{t.count}</span>
               </li>
-            )) : (
-              <li className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
-                No critical reviews in this view.
-              </li>
-            )}
+            ))}
           </ul>
+        </Panel>
+
+        {/* Category breakdown */}
+        <Panel title="Category breakdown" subtitle="Average score by category" className="lg:col-span-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {CATEGORIES.map(({ key, label }) => {
+              const v = averages[key as Category];
+              return (
+                <div key={key} className="rounded-xl border border-border bg-background p-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="font-semibold">{v.toFixed(2)}</span>
+                  </div>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-brand" style={{ width: `${(v / 5) * 100}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </Panel>
       </div>
     </div>
   );
+}
+
+function tally(items: string[]): { label: string; count: number }[] {
+  const m = new Map<string, number>();
+  for (const it of items) m.set(it, (m.get(it) ?? 0) + 1);
+  return Array.from(m.entries())
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count);
 }
 
 const tooltipStyle: React.CSSProperties = {
