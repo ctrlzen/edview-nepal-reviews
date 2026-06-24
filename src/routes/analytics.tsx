@@ -58,6 +58,11 @@ function Analytics() {
   // Sentiment
   const positives = filtered.filter((r) => avgOverall(r.ratings) >= 4);
   const negatives = filtered.filter((r) => avgOverall(r.ratings) <= 3);
+  const recPct = recommendationPct(filtered);
+
+  // Themes — count pros/cons strings across reviews
+  const positiveThemes = useMemo(() => tally(filtered.flatMap((r) => r.pros ?? [])), [filtered]);
+  const negativeThemes = useMemo(() => tally(filtered.flatMap((r) => r.cons ?? [])), [filtered]);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-14">
@@ -87,7 +92,7 @@ function Analytics() {
       <div className="mt-8 grid gap-4 md:grid-cols-4">
         <Kpi icon={<Star className="h-4 w-4" />} label="Average rating" value={overall.toFixed(2)} trend="+0.12" />
         <Kpi icon={<MessageCircle className="h-4 w-4" />} label="Total reviews" value={String(filtered.length)} trend="+18%" />
-        <Kpi icon={<Smile className="h-4 w-4" />} label="Positive sentiment" value={`${Math.round((positives.length / Math.max(filtered.length, 1)) * 100)}%`} trend="+4%" />
+        <Kpi icon={<ThumbsUp className="h-4 w-4" />} label="Would recommend" value={`${recPct}%`} trend="+3%" />
         <Kpi icon={<TrendingUp className="h-4 w-4" />} label="Helpful votes" value={String(filtered.reduce((s, r) => s + r.helpful, 0))} trend="+22%" />
       </div>
 
