@@ -4,8 +4,8 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
   LineChart, Line, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
-import { TrendingUp, MessageCircle, Smile, Frown, Star } from "lucide-react";
-import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, type Category } from "@/lib/edview-data";
+import { TrendingUp, MessageCircle, Smile, Frown, Star, ThumbsUp } from "lucide-react";
+import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, recommendationPct, type Category } from "@/lib/edview-data";
 import { useReviews } from "@/lib/edview-store";
 
 export const Route = createFileRoute("/analytics")({
