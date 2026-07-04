@@ -32,6 +32,8 @@ function DashboardPage() {
   const { profile, user } = useAuth();
   const { slugs: recentSlugs } = useRecentlyViewed();
   const firstName = (profile?.full_name ?? user?.email ?? "there").split(" ")[0];
+  const [greet, setGreet] = useState("Hello");
+  useEffect(() => { setGreet(greeting()); }, []);
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10 md:py-14">
@@ -39,7 +41,7 @@ function DashboardPage() {
       <section className="animate-fade-in-up">
         <p className="text-xs font-semibold uppercase tracking-widest text-brand">Your dashboard</p>
         <h1 className="mt-2 text-4xl tracking-tight md:text-5xl">
-          {greeting()}, {firstName} <span className="inline-block animate-fade-in">👋</span>
+          {greet}, {firstName} <span className="inline-block animate-fade-in">👋</span>
         </h1>
         <p className="mt-2 text-lg text-muted-foreground">What would you like to explore today?</p>
         <div className="mt-6 max-w-2xl">
