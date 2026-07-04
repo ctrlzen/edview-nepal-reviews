@@ -1,9 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
-import { Check, PenLine } from "lucide-react";
+import { Check, PenLine, ShieldCheck, LogIn } from "lucide-react";
 import { COLLEGES, CATEGORIES, type Category, type Review } from "@/lib/edview-data";
 import { useReviews } from "@/lib/edview-store";
+import { useAuth } from "@/lib/auth-context";
 
 const searchSchema = z.object({ college: z.string().optional() });
 
@@ -26,6 +27,7 @@ function SubmitPage() {
   const { college: preset } = Route.useSearch();
   const navigate = useNavigate();
   const { addReview } = useReviews();
+  const { isAuthenticated, profile, loading, primaryRole } = useAuth();
 
   const [slug, setSlug] = useState(preset ?? COLLEGES[0].slug);
   const [author, setAuthor] = useState("");
@@ -35,6 +37,33 @@ function SubmitPage() {
   const [body, setBody] = useState("");
   const [ratings, setRatings] = useState({ ...emptyRatings });
   const [submitted, setSubmitted] = useState(false);
+
+  if (loading) return <div className="mx-auto max-w-md px-6 py-32 text-center text-sm text-muted-foreground">Loading…</div>;
+
+  if (!isAuthenticated) {
+    return (
+      <Gate
+        title="Sign in to write a review"
+        desc="Reviews on EdView are tied to verified student accounts so future students can trust what they read."
+        cta={<Link to="/auth" search={{ mode: "signin", redirect: "/submit" }} className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-6 text-sm font-medium text-background"><LogIn className="h-4 w-4" /> Sign in to continue</Link>}
+      />
+    );
+  }
+
+  if (primaryRole !== "student" && primaryRole !== "platform_admin") {
+    return <Gate title="Only students can write reviews" desc="Your account is registered as a college admin. Switch to a student account to submit a review." />;
+  }
+
+  if (!profile?.student_verified && primaryRole !== "platform_admin") {
+    return (
+      <Gate
+        title="Your account is pending verification"
+        desc="A platform admin needs to verify your student status before you can post reviews. This usually takes a day."
+        cta={<div className="inline-flex items-center gap-2 rounded-full bg-brand/10 px-4 py-2 text-sm font-medium text-brand"><ShieldCheck className="h-4 w-4" /> Verification pending</div>}
+      />
+    );
+  }
+
 
   const valid =
     author.trim() && program.trim() && title.trim() && body.trim().length >= 30 &&
