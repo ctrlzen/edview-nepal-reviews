@@ -14,8 +14,8 @@ export const Route = createFileRoute("/_authenticated/compare")({
 function ComparePage() {
   const { slugs } = Route.useSearch();
   const list: College[] = (slugs?.split(",").filter(Boolean) ?? [])
-    .map((s: string) => COLLEGES.find((c) => c.slug === s))
-    .filter((c): c is College => !!c);
+    .map((s: string): College | undefined => COLLEGES.find((c) => c.slug === s))
+    .filter((c: College | undefined): c is College => !!c);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
