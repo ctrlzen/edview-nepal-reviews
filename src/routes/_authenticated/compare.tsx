@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { GitCompareArrows } from "lucide-react";
-import { COLLEGES, SEED_REVIEWS, CATEGORIES, collegeAverages, avgOverall, recommendationPct, type Category } from "@/lib/edview-data";
+import { COLLEGES, SEED_REVIEWS, CATEGORIES, collegeAverages, avgOverall, recommendationPct, type Category, type College } from "@/lib/edview-data";
 
 const searchSchema = z.object({ slugs: z.string().optional() });
 
@@ -13,9 +13,9 @@ export const Route = createFileRoute("/_authenticated/compare")({
 
 function ComparePage() {
   const { slugs } = Route.useSearch();
-  const list = (slugs?.split(",").filter(Boolean) ?? [])
+  const list: College[] = (slugs?.split(",").filter(Boolean) ?? [])
     .map((s: string) => COLLEGES.find((c) => c.slug === s))
-    .filter((c): c is (typeof COLLEGES)[number] => !!c);
+    .filter((c): c is College => !!c);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
