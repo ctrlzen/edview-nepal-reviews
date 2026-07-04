@@ -54,7 +54,16 @@ export function useReviews() {
     });
   }, []);
 
-  return { reviews, votes, addReview, vote };
+  const removeReview = useCallback((reviewId: string) => {
+    setReviews((prev) => {
+      const next = prev.filter((r) => r.id !== reviewId);
+      const userOnly = next.filter((r) => !r.id.startsWith("seed-"));
+      localStorage.setItem(REVIEWS_KEY, JSON.stringify(userOnly));
+      return next;
+    });
+  }, []);
+
+  return { reviews, votes, addReview, vote, removeReview };
 }
 
 export function applyVotes(review: Review, votes: Votes) {

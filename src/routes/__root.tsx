@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar, Footer } from "../components/edview/Navbar";
+import { AuthProvider } from "@/lib/auth-context";
 
 
 function NotFoundComponent() {
@@ -120,13 +121,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+      <AuthProvider>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
