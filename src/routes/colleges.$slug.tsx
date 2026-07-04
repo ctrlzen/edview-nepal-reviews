@@ -1,6 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-<<<<<<< HEAD
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
   MapPin,
@@ -18,17 +17,8 @@ import {
   X,
   Check,
   Loader2,
-  TrendingUp,
-  Smile,
-  Frown,
-  BarChart3,
 } from "lucide-react";
 import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College, type Review } from "@/lib/edview-data";
-=======
-import { useEffect, useMemo } from "react";
-import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine, Sparkles, CircleAlert as AlertCircle, Lightbulb } from "lucide-react";
-import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College } from "@/lib/edview-data";
->>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 import { useReviews, applyVotes } from "@/lib/edview-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { RatingPill, Stars } from "@/components/edview/Stars";
@@ -63,14 +53,10 @@ type SortOption = "date" | "rating" | "program";
 
 function Profile() {
   const { college } = Route.useLoaderData() as { college: College };
-<<<<<<< HEAD
   const { reviews, votes, vote, addReview, addReviewAsync, isSubmitting } = useReviews();
-=======
-  const { reviews, votes, vote } = useReviews();
   const { track } = useRecentlyViewed();
 
   useEffect(() => { track(college.slug); }, [college.slug, track]);
->>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 
   const emptyRatings: Record<Category, number> = {
     academics: 0,
@@ -327,144 +313,9 @@ function Profile() {
                 onClick={() => setShowReviewModal(true)}
               >
                 <PenLine className="h-4 w-4" /> Write a Review
-          </Button>
+              </Button>
             </div>
           </div>
-
-          {/* ---- Inline College Analytics ---- */}
-          {collegeReviews.length > 0 && (
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-              <header className="mb-4 flex items-start justify-between">
-                <div>
-                  <h2 className="inline-flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                    <BarChart3 className="h-4 w-4 text-brand" /> College analytics
-                  </h2>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    Aggregate insights from {collegeReviews.length} student reviews
-                  </p>
-                </div>
-                <Link
-                  to="/analytics"
-                  search={{ college: college.slug }}
-                  className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1.5 text-[11px] font-medium text-foreground hover:bg-brand-soft hover:text-brand transition"
-                >
-                  View Full Analytics <TrendingUp className="h-3 w-3" />
-                </Link>
-              </header>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {/* Average rating */}
-                <div className="rounded-xl border border-border bg-background p-4 text-center">
-                  <div className="text-xs text-muted-foreground">Average rating</div>
-                  <div className="mt-1 font-display text-3xl text-brand leading-none">{overall.toFixed(1)}</div>
-                  <div className="mt-1 flex justify-center">
-                    <Stars value={overall} size={12} />
-                  </div>
-                </div>
-
-                {/* Recommendation */}
-                <div className="rounded-xl border border-border bg-background p-4 text-center">
-                  <div className="text-xs text-muted-foreground">Would recommend</div>
-                  <div className="mt-1 font-display text-3xl text-brand leading-none">{recPct}%</div>
-                  <div className="mt-1 text-[10px] text-muted-foreground">
-                    {collegeReviews.filter((r) => avgOverall(r.ratings) >= 3.8).length} of {collegeReviews.length} reviewers
-                  </div>
-                </div>
-
-                {/* Sentiment */}
-                <div className="rounded-xl border border-border bg-background p-4">
-                  <div className="text-xs text-muted-foreground">Sentiment</div>
-                  <div className="mt-2 flex items-center gap-3 text-xs">
-                    <span className="inline-flex items-center gap-1">
-                      <Smile className="h-3.5 w-3.5 text-brand" />
-                      <span className="font-semibold">{positives.length}</span>
-                      <span className="text-muted-foreground">positive</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <Frown className="h-3.5 w-3.5 text-warm" />
-                      <span className="font-semibold">{negatives.length}</span>
-                      <span className="text-muted-foreground">critical</span>
-                    </span>
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-brand transition-all"
-                      style={{ width: `${collegeReviews.length ? (positives.length / collegeReviews.length) * 100 : 0}%` }}
-                    />
-                  </div>
-                  <div className="mt-0.5 flex justify-between text-[10px] text-muted-foreground">
-                    <span>positive</span>
-                    <span>critical</span>
-                  </div>
-                </div>
-
-                {/* Rating distribution mini */}
-                <div className="rounded-xl border border-border bg-background p-4">
-                  <div className="text-xs text-muted-foreground">Rating distribution</div>
-                  <div className="mt-2 space-y-1">
-                    {[5, 4, 3, 2, 1].map((star) => {
-                      const count = collegeReviews.filter((r) => Math.round(avgOverall(r.ratings)) === star).length;
-                      const pct = collegeReviews.length ? (count / collegeReviews.length) * 100 : 0;
-                      return (
-                        <div key={star} className="flex items-center gap-2 text-[10px]">
-                          <span className="w-3 text-right text-muted-foreground">{star}</span>
-                          <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                            <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
-                          </div>
-                          <span className="w-5 text-right text-muted-foreground">{count}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Category breakdown mini */}
-              <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                {CATEGORIES.map(({ key, label }) => (
-                  <div key={key} className="rounded-lg border border-border bg-background px-3 py-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">{label}</span>
-                      <span className="font-semibold">{averages[key as Category].toFixed(1)}</span>
-                    </div>
-                    <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted">
-                      <div className="h-full rounded-full bg-brand" style={{ width: `${(averages[key as Category] / 5) * 100}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Themes */}
-              {positiveThemes.length > 0 && (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <div>
-                    <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-brand">Top positive themes</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {positiveThemes.slice(0, 4).map((t) => (
-                        <span key={t.label} className="inline-flex items-center gap-1 rounded-full bg-brand-soft/60 px-2.5 py-1 text-[10px] font-medium text-brand">
-                          {t.label} <span className="rounded-full bg-brand px-1.5 py-0.5 text-[9px] text-brand-foreground">×{t.count}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-accent-foreground">Top concerns</div>
-                    <div className="flex flex-wrap gap-1.5">
-                      {negativeThemes.length > 0 ? (
-                        negativeThemes.slice(0, 4).map((t) => (
-                          <span key={t.label} className="inline-flex items-center gap-1 rounded-full bg-accent/50 px-2.5 py-1 text-[10px] font-medium text-accent-foreground">
-                            {t.label} <span className="rounded-full bg-warm px-1.5 py-0.5 text-[9px] text-brand-foreground">×{t.count}</span>
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-[10px] text-muted-foreground">No concerns frequently mentioned</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </section>
-          )}
 
           {/* Reviews Section */}
           <div>

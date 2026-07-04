@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-import { Link } from "@tanstack/react-router";
-import { GraduationCap, BarChart3 } from "lucide-react";
-=======
 import { Link, useNavigate } from "@tanstack/react-router";
 import { GraduationCap, LogOut, Bookmark, ShieldCheck, Building2, User as UserIcon, Crown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
->>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 
 export function Navbar() {
   const { isAuthenticated, profile, primaryRole, hasRole, signOut, user } = useAuth();
@@ -43,17 +38,6 @@ export function Navbar() {
           </span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-<<<<<<< HEAD
-          <NavLink to="/colleges">Colleges</NavLink>
-          <Link
-            to="/analytics"
-            className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
-            activeProps={{ className: "text-brand" }}
-          >
-            <BarChart3 className="h-4 w-4" />
-            Analytics
-          </Link>
-=======
           {isAuthenticated && hasRole("student") && <NavLink to="/dashboard">Dashboard</NavLink>}
           <NavLink to="/colleges">All Colleges</NavLink>
           {isAuthenticated && hasRole("student") && <NavLink to="/compare">Compare</NavLink>}
@@ -62,7 +46,6 @@ export function Navbar() {
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/college-admin">Dashboard</NavLink>}
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/premium">Premium</NavLink>}
           {isAuthenticated && hasRole("platform_admin") && <NavLink to="/admin">Admin</NavLink>}
->>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
           <NavLink to="/submit">Write a review</NavLink>
         </nav>
 
@@ -164,4 +147,3 @@ export function Footer() {
     </footer>
   );
 }
-
