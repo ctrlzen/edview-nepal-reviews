@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { GraduationCap, Building2, ShieldCheck, Loader2 } from "lucide-react";
+import { GraduationCap, Building2, ShieldCheck, Loader as Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, type AppRole } from "@/lib/auth-context";
 
@@ -34,7 +34,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate({ to: search.redirect ?? "/", replace: true });
+      navigate({ to: search.redirect ?? "/dashboard", replace: true });
     }
   }, [loading, isAuthenticated, navigate, search.redirect]);
 

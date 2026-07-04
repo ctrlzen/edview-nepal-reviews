@@ -38,7 +38,9 @@ export function Navbar() {
           </span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          <NavLink to="/colleges">Colleges</NavLink>
+          {isAuthenticated && hasRole("student") && <NavLink to="/dashboard">Dashboard</NavLink>}
+          <NavLink to="/colleges">All Colleges</NavLink>
+          {isAuthenticated && hasRole("student") && <NavLink to="/compare">Compare</NavLink>}
           <NavLink to="/analytics">Analytics</NavLink>
           {isAuthenticated && hasRole("student") && <NavLink to="/saved">Saved</NavLink>}
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/college-admin">Dashboard</NavLink>}
@@ -61,6 +63,9 @@ export function Navbar() {
                   <div className="truncate text-sm font-semibold">{displayName}</div>
                   <div className="mt-0.5 text-xs text-muted-foreground capitalize">{primaryRole?.replace("_", " ") ?? "Guest"}</div>
                 </div>
+                {hasRole("student") && (
+                  <MenuLink to="/dashboard" onClick={() => setOpen(false)} icon={<GraduationCap className="h-4 w-4" />}>Dashboard</MenuLink>
+                )}
                 {hasRole("student") && (
                   <MenuLink to="/saved" onClick={() => setOpen(false)} icon={<Bookmark className="h-4 w-4" />}>Saved colleges</MenuLink>
                 )}

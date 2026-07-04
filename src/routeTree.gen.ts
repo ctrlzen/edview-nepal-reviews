@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SubmitRouteImport } from './routes/submit'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as CollegesRouteImport } from './routes/colleges'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -18,6 +19,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
 import { Route as AuthenticatedCollegeAdminRouteImport } from './routes/_authenticated/college-admin'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -28,6 +30,11 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 const SubmitRoute = SubmitRouteImport.update({
   id: '/submit',
   path: '/submit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -67,6 +74,11 @@ const CollegesSlugRoute = CollegesSlugRouteImport.update({
 const AuthenticatedSavedRoute = AuthenticatedSavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCompareRoute = AuthenticatedCompareRouteImport.update({
@@ -110,12 +122,14 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/mcp': typeof McpRoute
+  '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/compare': typeof AuthenticatedCompareRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -126,12 +140,14 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/mcp': typeof McpRoute
+  '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/compare': typeof AuthenticatedCompareRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -144,12 +160,14 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/colleges': typeof CollegesRouteWithChildren
   '/mcp': typeof McpRoute
+  '/search': typeof SearchRoute
   '/submit': typeof SubmitRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -162,12 +180,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/colleges'
     | '/mcp'
+    | '/search'
     | '/submit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/college-admin'
     | '/compare'
+    | '/dashboard'
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -178,12 +198,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/colleges'
     | '/mcp'
+    | '/search'
     | '/submit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/college-admin'
     | '/compare'
+    | '/dashboard'
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -195,12 +217,14 @@ export interface FileRouteTypes {
     | '/auth'
     | '/colleges'
     | '/mcp'
+    | '/search'
     | '/submit'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/college-admin'
     | '/_authenticated/compare'
+    | '/_authenticated/dashboard'
     | '/_authenticated/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -213,6 +237,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CollegesRoute: typeof CollegesRouteWithChildren
   McpRoute: typeof McpRoute
+  SearchRoute: typeof SearchRoute
   SubmitRoute: typeof SubmitRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -226,6 +251,13 @@ declare module '@tanstack/react-router' {
       path: '/submit'
       fullPath: '/submit'
       preLoaderRoute: typeof SubmitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -284,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSavedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compare': {
       id: '/_authenticated/compare'
       path: '/compare'
@@ -333,6 +372,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCollegeAdminRoute: typeof AuthenticatedCollegeAdminRoute
   AuthenticatedCompareRoute: typeof AuthenticatedCompareRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
 }
 
@@ -340,6 +380,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCollegeAdminRoute: AuthenticatedCollegeAdminRoute,
   AuthenticatedCompareRoute: AuthenticatedCompareRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
 }
 
@@ -365,6 +406,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CollegesRoute: CollegesRouteWithChildren,
   McpRoute: McpRoute,
+  SearchRoute: SearchRoute,
   SubmitRoute: SubmitRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

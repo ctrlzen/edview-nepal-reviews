@@ -1,8 +1,9 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useMemo } from "react";
-import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine, Sparkles, AlertCircle, Lightbulb } from "lucide-react";
+import { useEffect, useMemo } from "react";
+import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine, Sparkles, CircleAlert as AlertCircle, Lightbulb } from "lucide-react";
 import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College } from "@/lib/edview-data";
 import { useReviews, applyVotes } from "@/lib/edview-store";
+import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { RatingPill, Stars } from "@/components/edview/Stars";
 
 export const Route = createFileRoute("/colleges/$slug")({
@@ -29,6 +30,9 @@ export const Route = createFileRoute("/colleges/$slug")({
 function Profile() {
   const { college } = Route.useLoaderData() as { college: College };
   const { reviews, votes, vote } = useReviews();
+  const { track } = useRecentlyViewed();
+
+  useEffect(() => { track(college.slug); }, [college.slug, track]);
 
   const collegeReviews = useMemo(
     () => reviews.filter((r) => r.collegeSlug === college.slug).map((r) => applyVotes(r, votes))
