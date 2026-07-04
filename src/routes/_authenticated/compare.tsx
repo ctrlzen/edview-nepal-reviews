@@ -13,7 +13,9 @@ export const Route = createFileRoute("/_authenticated/compare")({
 
 function ComparePage() {
   const { slugs } = Route.useSearch();
-  const list = (slugs?.split(",").filter(Boolean) ?? []).map((s) => COLLEGES.find((c) => c.slug === s)).filter(Boolean) as typeof COLLEGES;
+  const list = (slugs?.split(",").filter(Boolean) ?? [])
+    .map((s: string) => COLLEGES.find((c) => c.slug === s))
+    .filter((c): c is (typeof COLLEGES)[number] => !!c);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
