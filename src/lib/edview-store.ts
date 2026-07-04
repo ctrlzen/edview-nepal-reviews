@@ -114,6 +114,7 @@ export function useReviews() {
     });
   }, []);
 
+<<<<<<< HEAD
   // --- Add review mutation ---
   const addReviewMutation = useMutation({
     mutationFn: async (review: Review) => {
@@ -153,6 +154,18 @@ export function useReviews() {
     isSubmitting: addReviewMutation.isPending,
     isSuccess: addReviewMutation.isSuccess,
   };
+=======
+  const removeReview = useCallback((reviewId: string) => {
+    setReviews((prev) => {
+      const next = prev.filter((r) => r.id !== reviewId);
+      const userOnly = next.filter((r) => !r.id.startsWith("seed-"));
+      localStorage.setItem(REVIEWS_KEY, JSON.stringify(userOnly));
+      return next;
+    });
+  }, []);
+
+  return { reviews, votes, addReview, vote, removeReview };
+>>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 }
 
 export function applyVotes(review: Review, votes: Votes) {

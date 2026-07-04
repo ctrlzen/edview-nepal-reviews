@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+<<<<<<< HEAD
 import { useMemo, useState } from "react";
 import {
   ArrowLeft,
@@ -23,7 +24,13 @@ import {
   BarChart3,
 } from "lucide-react";
 import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College, type Review } from "@/lib/edview-data";
+=======
+import { useEffect, useMemo } from "react";
+import { ArrowLeft, MapPin, Calendar, GraduationCap, Wallet, ThumbsUp, ThumbsDown, PenLine, Sparkles, CircleAlert as AlertCircle, Lightbulb } from "lucide-react";
+import { COLLEGES, CATEGORIES, avgOverall, collegeAverages, getCollege, recommendationPct, type Category, type College } from "@/lib/edview-data";
+>>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 import { useReviews, applyVotes } from "@/lib/edview-store";
+import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { RatingPill, Stars } from "@/components/edview/Stars";
 import { StarRating } from "@/components/edview/StarRating";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -56,7 +63,14 @@ type SortOption = "date" | "rating" | "program";
 
 function Profile() {
   const { college } = Route.useLoaderData() as { college: College };
+<<<<<<< HEAD
   const { reviews, votes, vote, addReview, addReviewAsync, isSubmitting } = useReviews();
+=======
+  const { reviews, votes, vote } = useReviews();
+  const { track } = useRecentlyViewed();
+
+  useEffect(() => { track(college.slug); }, [college.slug, track]);
+>>>>>>> c0979e0b8a14227c8332228c7a6564107b6a9739
 
   const emptyRatings: Record<Category, number> = {
     academics: 0,

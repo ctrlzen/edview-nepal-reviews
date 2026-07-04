@@ -292,3 +292,236 @@ export function recommendationPct(reviews: Review[]): number {
 export function getCollege(slug: string) {
   return COLLEGES.find((c) => c.slug === slug);
 }
+
+// --- Admissions deadlines (relative to "today" so the dashboard always feels live) ---
+
+export type Admission = {
+  collegeSlug: string;
+  program: string;
+  deadline: string; // ISO date
+  rounds: string;
+};
+
+function dateOffset(days: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+export const ADMISSIONS: Admission[] = [
+  { collegeSlug: "trinity-international-college", program: "+2 Science", deadline: dateOffset(9), rounds: "Main round" },
+  { collegeSlug: "global-college-international", program: "IB Diploma", deadline: dateOffset(16), rounds: "Early + main" },
+  { collegeSlug: "texas-international-college", program: "BSc CSIT", deadline: dateOffset(5), rounds: "Rolling" },
+  { collegeSlug: "st-xaviers-college", program: "BSc Physics", deadline: dateOffset(21), rounds: "Main round" },
+  { collegeSlug: "prime-college", program: "BSc CSIT", deadline: dateOffset(12), rounds: "Rolling" },
+  { collegeSlug: "little-angels-college", program: "BBA", deadline: dateOffset(28), rounds: "Early + main" },
+  { collegeSlug: "ace-institute-of-management", program: "BBA-BI", deadline: dateOffset(34), rounds: "Main round" },
+  { collegeSlug: "reliance-international-academy", program: "A-Levels", deadline: dateOffset(7), rounds: "Early round" },
+];
+
+// --- Scholarships ---
+
+export type Scholarship = {
+  id: string;
+  collegeSlug: string;
+  name: string;
+  deadline: string; // ISO date
+  eligibility: string;
+  amount: string;
+};
+
+export const SCHOLARSHIPS: Scholarship[] = [
+  { id: "sch-1", collegeSlug: "st-xaviers-college", name: "Merit Excellence Award", deadline: dateOffset(18), eligibility: "Top 5% in entrance exam", amount: "Up to 100% tuition" },
+  { id: "sch-2", collegeSlug: "global-college-international", name: "Global Thinkers Grant", deadline: dateOffset(25), eligibility: "IB Diploma applicants with 38+ predicted", amount: "NPR 200,000" },
+  { id: "sch-3", collegeSlug: "trinity-international-college", name: "Science Achiever Scholarship", deadline: dateOffset(11), eligibility: "SEE GPA 3.8+ applying to +2 Science", amount: "50% tuition" },
+  { id: "sch-4", collegeSlug: "prime-college", name: "Tech Innovators Scholarship", deadline: dateOffset(14), eligibility: "BSc CSIT applicants with coding portfolio", amount: "NPR 150,000" },
+  { id: "sch-5", collegeSlug: "ace-institute-of-management", name: "Future Leaders Award", deadline: dateOffset(30), eligibility: "BBA applicants with leadership record", amount: "Up to 40% tuition" },
+  { id: "sch-6", collegeSlug: "texas-international-college", name: "Access Scholarship", deadline: dateOffset(6), eligibility: "Need-based, all programs", amount: "NPR 80,000" },
+  { id: "sch-7", collegeSlug: "little-angels-college", name: "Hospitality Excellence Grant", deadline: dateOffset(22), eligibility: "BHM applicants with industry interest", amount: "30% tuition" },
+  { id: "sch-8", collegeSlug: "kathmandu-model-college", name: "Community Scholarship", deadline: dateOffset(19), eligibility: "First-generation college students", amount: "NPR 60,000" },
+];
+
+export function daysUntil(iso: string): number {
+  const target = new Date(iso + "T23:59:59");
+  const now = new Date();
+  return Math.max(0, Math.ceil((target.getTime() - now.getTime()) / 86400000));
+}
+
+// --- AI semantic search ---
+
+// Keyword groups map natural-language intents to colleges + categories.
+const INTENTS: { match: string[]; colleges?: string[]; categories?: Category[]; tags?: string[] }[] = [
+  { match: ["best academics", "academic", "rigorous", "tough", "studious"], categories: ["academics"], tags: ["Strong academic rigor", "Rigorous Cambridge curriculum"] },
+  { match: ["best teachers", "good teachers", "friendly teachers", "faculty", "professor", "supportive teachers"], categories: ["teachers"], tags: ["Supportive, knowledgeable teachers"] },
+  { match: ["facilities", "campus", "infrastructure", "labs", "library", "modern campus"], categories: ["facilities"], tags: ["Modern, well-kept facilities", "Excellent lab facilities"] },
+  { match: ["student life", "campus life", "clubs", "extracurricular", "activities", "fun"], categories: ["studentLife"], tags: ["Active clubs and student life"] },
+  { match: ["placement", "placements", "career", "job", "internship", "career support"], categories: ["careerSupport"], tags: ["Real career and placement support", "Strong university placement"] },
+  { match: ["affordable", "cheap", "value", "low fees", "budget", "value for money", "cheapest"], categories: ["valueForMoney"], tags: ["Great value for the tuition", "Affordable tuition"] },
+  { match: ["bca", "computer application"], colleges: ["texas-international-college", "st-xaviers-college", "trinity-international-college"], tags: ["BCA"] },
+  { match: ["bba", "business", "management"], colleges: ["ace-institute-of-management", "little-angels-college", "trinity-international-college", "kathmandu-model-college"], tags: ["BBA"] },
+  { match: ["csit", "bsc csit", "it", "computer science", "software", "coding"], colleges: ["texas-international-college", "prime-college", "kathmandu-model-college"], tags: ["BSc CSIT"] },
+  { match: ["science", "+2 science", "physics", "medical", "entrance"], colleges: ["st-xaviers-college", "trinity-international-college", "texas-international-college"], tags: ["+2 Science"] },
+  { match: ["ib", "a-levels", "cambridge", "international", "abroad"], colleges: ["global-college-international", "reliance-international-academy"], tags: ["IB", "A-Levels"] },
+  { match: ["management", "+2 management", "business"], colleges: ["trinity-international-college", "kathmandu-model-college", "dav-college"], tags: ["+2 Management"] },
+  { match: ["hospitality", "bhm", "hotel"], colleges: ["little-angels-college"], tags: ["BHM"] },
+  { match: ["strict", "discipline", "rules", "administration"], colleges: ["st-xaviers-college"], tags: ["Strict but rewarding"] },
+];
+
+function tokenize(s: string): string[] {
+  return s.toLowerCase().replace(/[^a-z0-9\s+]/g, " ").split(/\s+/).filter(Boolean);
+}
+
+function fuzzyIncludes(text: string, query: string): boolean {
+  const t = text.toLowerCase();
+  const q = query.toLowerCase();
+  if (t.includes(q)) return true;
+  // fuzzy: allow missing/extra chars for short queries
+  if (q.length >= 4) {
+    const tokens = tokenize(t);
+    return tokens.some((tok) => tok.length >= q.length - 1 && levenshtein(tok, q) <= 1);
+  }
+  return false;
+}
+
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  if (!m) return n;
+  if (!n) return m;
+  const dp = Array.from({ length: m + 1 }, (_, i) => i);
+  for (let j = 1; j <= n; j++) {
+    let prev = dp[0];
+    dp[0] = j;
+    for (let i = 1; i <= m; i++) {
+      const tmp = dp[i];
+      dp[i] = Math.min(dp[i] + 1, dp[i - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return dp[m];
+}
+
+export type AiSearchResult = {
+  colleges: { college: College; score: number; reason: string; avg: number; recPct: number }[];
+  reviews: Review[];
+  summary: string;
+  related: string[];
+};
+
+export function aiSearch(query: string): AiSearchResult {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    return { colleges: [], reviews: [], summary: "", related: [] };
+  }
+
+  const matchedIntents = INTENTS.filter((intent) =>
+    intent.match.some((m) => q.includes(m) || fuzzyIncludes(m, q)),
+  );
+
+  const scored = COLLEGES.map((c) => {
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Name / location / program text match
+    const haystack = `${c.name} ${c.location} ${c.programs.join(" ")} ${c.tagline} ${c.about}`.toLowerCase();
+    if (haystack.includes(q)) {
+      score += 3;
+      reasons.push("matches your search");
+    } else {
+      for (const tok of tokenize(q)) {
+        if (tok.length < 3) continue;
+        if (haystack.includes(tok)) {
+          score += 1;
+          reasons.push(`offers ${tok}`);
+        }
+      }
+    }
+
+    // Intent matches
+    for (const intent of matchedIntents) {
+      if (intent.colleges?.includes(c.slug)) {
+        score += 4;
+        reasons.push("matches your interest");
+      }
+      if (intent.categories?.length) {
+        const reviews = SEED_REVIEWS.filter((r) => r.collegeSlug === c.slug);
+        const avgs = collegeAverages(reviews);
+        for (const cat of intent.categories) {
+          if (avgs[cat] >= 4) {
+            score += 2;
+            reasons.push(`strong ${CATEGORIES.find((x) => x.key === cat)?.label.toLowerCase()}`);
+          }
+        }
+      }
+      if (intent.tags) {
+        const reviews = SEED_REVIEWS.filter((r) => r.collegeSlug === c.slug);
+        const allPros = reviews.flatMap((r) => r.pros ?? []);
+        for (const tag of intent.tags) {
+          if (allPros.some((p) => p.toLowerCase().includes(tag.toLowerCase()))) {
+            score += 2;
+            reasons.push(`students mention "${tag.toLowerCase()}"`);
+            break;
+          }
+        }
+      }
+    }
+
+    // Rating boost
+    const reviews = SEED_REVIEWS.filter((r) => r.collegeSlug === c.slug);
+    const avg = reviews.length ? reviews.reduce((s, r) => s + avgOverall(r.ratings), 0) / reviews.length : 0;
+    if (avg >= 4.3) score += 1;
+
+    return { college: c, score, reason: reasons[0] ?? "relevant result", avg, recPct: recommendationPct(reviews) };
+  })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
+
+  // Reviews: match by body/title/pros/cons/program
+  const matchedReviews = SEED_REVIEWS.filter((r) => {
+    const text = `${r.title} ${r.body} ${(r.pros ?? []).join(" ")} ${(r.cons ?? []).join(" ")} ${r.program}`.toLowerCase();
+    return fuzzyIncludes(text, q) || tokenize(q).some((tok) => tok.length >= 4 && text.includes(tok));
+  })
+    .sort((a, b) => b.helpful - a.helpful)
+    .slice(0, 4);
+
+  // AI summary
+  let summary = "";
+  if (scored.length === 0 && matchedReviews.length === 0) {
+    summary = `I couldn't find exact matches for "${query}". Try searching by program (BCA, BBA, +2 Science), a quality (academics, placements), or a college name.`;
+  } else {
+    const top = scored.slice(0, 3).map((s) => s.college.name);
+    const qualities = matchedIntents.flatMap((i) => i.categories ?? []).map(
+      (c) => CATEGORIES.find((x) => x.key === c)?.label.toLowerCase() ?? "",
+    );
+    const qualityPhrase = qualities.length ? ` known for ${[...new Set(qualities)].slice(0, 2).join(" and ")}` : "";
+    summary = `Based on student reviews, ${top.join(", ")}${qualityPhrase} stand out for "${query}". ${
+      matchedReviews.length
+        ? `${matchedReviews.length} relevant review${matchedReviews.length > 1 ? "s" : ""} highlight what students actually experienced.`
+        : "Reviews are limited, so visit each profile to dig deeper."
+    }`;
+  }
+
+  // Related searches
+  const relatedPool = [
+    "Best academics", "Good BCA college", "Affordable colleges", "Friendly teachers",
+    "Good campus life", "Best placements", "Strict administration", "Colleges for BBA",
+    "Science colleges", "Colleges with great facilities",
+  ];
+  const related = relatedPool
+    .filter((r) => r.toLowerCase() !== q && !r.toLowerCase().includes(q))
+    .slice(0, 5);
+
+  return { colleges: scored, reviews: matchedReviews, summary, related };
+}
+
+export const SEARCH_PLACEHOLDERS = [
+  "Search colleges...",
+  "Best college for BCA",
+  "Best academics",
+  "Affordable engineering colleges",
+  "Colleges with great placements",
+  "Best student life",
+  "Good BBA college",
+  "Friendly teachers",
+  "Colleges for +2 Science",
+];
