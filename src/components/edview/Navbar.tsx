@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { GraduationCap, LogOut, Bookmark, ShieldCheck, Building2, User as UserIcon } from "lucide-react";
+import { GraduationCap, LogOut, Bookmark, ShieldCheck, Building2, User as UserIcon, Crown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -44,6 +44,7 @@ export function Navbar() {
           <NavLink to="/analytics">Analytics</NavLink>
           {isAuthenticated && hasRole("student") && <NavLink to="/saved">Saved</NavLink>}
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/college-admin">Dashboard</NavLink>}
+          {isAuthenticated && hasRole("college_admin") && <NavLink to="/premium">Premium</NavLink>}
           {isAuthenticated && hasRole("platform_admin") && <NavLink to="/admin">Admin</NavLink>}
           <NavLink to="/submit">Write a review</NavLink>
         </nav>
@@ -70,7 +71,10 @@ export function Navbar() {
                   <MenuLink to="/saved" onClick={() => setOpen(false)} icon={<Bookmark className="h-4 w-4" />}>Saved colleges</MenuLink>
                 )}
                 {hasRole("college_admin") && (
-                  <MenuLink to="/college-admin" onClick={() => setOpen(false)} icon={<Building2 className="h-4 w-4" />}>College dashboard</MenuLink>
+                  <>
+                    <MenuLink to="/college-admin" onClick={() => setOpen(false)} icon={<Building2 className="h-4 w-4" />}>College dashboard</MenuLink>
+                    <MenuLink to="/premium" onClick={() => setOpen(false)} icon={<Crown className="h-4 w-4" />}>Premium dashboard</MenuLink>
+                  </>
                 )}
                 {hasRole("platform_admin") && (
                   <MenuLink to="/admin" onClick={() => setOpen(false)} icon={<ShieldCheck className="h-4 w-4" />}>Admin console</MenuLink>

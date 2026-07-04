@@ -19,12 +19,19 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
+import { Route as AuthenticatedPremiumRouteImport } from './routes/_authenticated/premium'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
 import { Route as AuthenticatedCollegeAdminRouteImport } from './routes/_authenticated/college-admin'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as AuthenticatedPremiumIndexRouteImport } from './routes/_authenticated/premium/index'
+import { Route as AuthenticatedPremiumTopicsRouteImport } from './routes/_authenticated/premium/topics'
+import { Route as AuthenticatedPremiumReviewsRouteImport } from './routes/_authenticated/premium/reviews'
+import { Route as AuthenticatedPremiumReportRouteImport } from './routes/_authenticated/premium/report'
+import { Route as AuthenticatedPremiumProfileRouteImport } from './routes/_authenticated/premium/profile'
+import { Route as AuthenticatedPremiumAnalyticsRouteImport } from './routes/_authenticated/premium/analytics'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
 const SubmitRoute = SubmitRouteImport.update({
@@ -76,6 +83,11 @@ const AuthenticatedSavedRoute = AuthenticatedSavedRouteImport.update({
   path: '/saved',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPremiumRoute = AuthenticatedPremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -109,6 +121,42 @@ const Char91DotmcpChar93ListToolsRoute =
     path: '/.mcp/list-tools',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedPremiumIndexRoute =
+  AuthenticatedPremiumIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
+const AuthenticatedPremiumTopicsRoute =
+  AuthenticatedPremiumTopicsRouteImport.update({
+    id: '/topics',
+    path: '/topics',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
+const AuthenticatedPremiumReviewsRoute =
+  AuthenticatedPremiumReviewsRouteImport.update({
+    id: '/reviews',
+    path: '/reviews',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
+const AuthenticatedPremiumReportRoute =
+  AuthenticatedPremiumReportRouteImport.update({
+    id: '/report',
+    path: '/report',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
+const AuthenticatedPremiumProfileRoute =
+  AuthenticatedPremiumProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
+const AuthenticatedPremiumAnalyticsRoute =
+  AuthenticatedPremiumAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedPremiumRoute,
+  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -130,9 +178,16 @@ export interface FileRoutesByFullPath {
   '/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/compare': typeof AuthenticatedCompareRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/premium': typeof AuthenticatedPremiumRouteWithChildren
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/premium/analytics': typeof AuthenticatedPremiumAnalyticsRoute
+  '/premium/profile': typeof AuthenticatedPremiumProfileRoute
+  '/premium/report': typeof AuthenticatedPremiumReportRoute
+  '/premium/reviews': typeof AuthenticatedPremiumReviewsRoute
+  '/premium/topics': typeof AuthenticatedPremiumTopicsRoute
+  '/premium/': typeof AuthenticatedPremiumIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -151,6 +206,12 @@ export interface FileRoutesByTo {
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/premium/analytics': typeof AuthenticatedPremiumAnalyticsRoute
+  '/premium/profile': typeof AuthenticatedPremiumProfileRoute
+  '/premium/report': typeof AuthenticatedPremiumReportRoute
+  '/premium/reviews': typeof AuthenticatedPremiumReviewsRoute
+  '/premium/topics': typeof AuthenticatedPremiumTopicsRoute
+  '/premium': typeof AuthenticatedPremiumIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -168,9 +229,16 @@ export interface FileRoutesById {
   '/_authenticated/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/premium': typeof AuthenticatedPremiumRouteWithChildren
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/premium/analytics': typeof AuthenticatedPremiumAnalyticsRoute
+  '/_authenticated/premium/profile': typeof AuthenticatedPremiumProfileRoute
+  '/_authenticated/premium/report': typeof AuthenticatedPremiumReportRoute
+  '/_authenticated/premium/reviews': typeof AuthenticatedPremiumReviewsRoute
+  '/_authenticated/premium/topics': typeof AuthenticatedPremiumTopicsRoute
+  '/_authenticated/premium/': typeof AuthenticatedPremiumIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -188,9 +256,16 @@ export interface FileRouteTypes {
     | '/college-admin'
     | '/compare'
     | '/dashboard'
+    | '/premium'
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
+    | '/premium/analytics'
+    | '/premium/profile'
+    | '/premium/report'
+    | '/premium/reviews'
+    | '/premium/topics'
+    | '/premium/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -209,6 +284,12 @@ export interface FileRouteTypes {
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
+    | '/premium/analytics'
+    | '/premium/profile'
+    | '/premium/report'
+    | '/premium/reviews'
+    | '/premium/topics'
+    | '/premium'
   id:
     | '__root__'
     | '/'
@@ -225,9 +306,16 @@ export interface FileRouteTypes {
     | '/_authenticated/college-admin'
     | '/_authenticated/compare'
     | '/_authenticated/dashboard'
+    | '/_authenticated/premium'
     | '/_authenticated/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/premium/analytics'
+    | '/_authenticated/premium/profile'
+    | '/_authenticated/premium/report'
+    | '/_authenticated/premium/reviews'
+    | '/_authenticated/premium/topics'
+    | '/_authenticated/premium/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -316,6 +404,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSavedRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/premium': {
+      id: '/_authenticated/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof AuthenticatedPremiumRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -358,6 +453,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/premium/': {
+      id: '/_authenticated/premium/'
+      path: '/'
+      fullPath: '/premium/'
+      preLoaderRoute: typeof AuthenticatedPremiumIndexRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
+    '/_authenticated/premium/topics': {
+      id: '/_authenticated/premium/topics'
+      path: '/topics'
+      fullPath: '/premium/topics'
+      preLoaderRoute: typeof AuthenticatedPremiumTopicsRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
+    '/_authenticated/premium/reviews': {
+      id: '/_authenticated/premium/reviews'
+      path: '/reviews'
+      fullPath: '/premium/reviews'
+      preLoaderRoute: typeof AuthenticatedPremiumReviewsRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
+    '/_authenticated/premium/report': {
+      id: '/_authenticated/premium/report'
+      path: '/report'
+      fullPath: '/premium/report'
+      preLoaderRoute: typeof AuthenticatedPremiumReportRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
+    '/_authenticated/premium/profile': {
+      id: '/_authenticated/premium/profile'
+      path: '/profile'
+      fullPath: '/premium/profile'
+      preLoaderRoute: typeof AuthenticatedPremiumProfileRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
+    '/_authenticated/premium/analytics': {
+      id: '/_authenticated/premium/analytics'
+      path: '/analytics'
+      fullPath: '/premium/analytics'
+      preLoaderRoute: typeof AuthenticatedPremiumAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedPremiumRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -368,11 +505,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedPremiumRouteChildren {
+  AuthenticatedPremiumAnalyticsRoute: typeof AuthenticatedPremiumAnalyticsRoute
+  AuthenticatedPremiumProfileRoute: typeof AuthenticatedPremiumProfileRoute
+  AuthenticatedPremiumReportRoute: typeof AuthenticatedPremiumReportRoute
+  AuthenticatedPremiumReviewsRoute: typeof AuthenticatedPremiumReviewsRoute
+  AuthenticatedPremiumTopicsRoute: typeof AuthenticatedPremiumTopicsRoute
+  AuthenticatedPremiumIndexRoute: typeof AuthenticatedPremiumIndexRoute
+}
+
+const AuthenticatedPremiumRouteChildren: AuthenticatedPremiumRouteChildren = {
+  AuthenticatedPremiumAnalyticsRoute: AuthenticatedPremiumAnalyticsRoute,
+  AuthenticatedPremiumProfileRoute: AuthenticatedPremiumProfileRoute,
+  AuthenticatedPremiumReportRoute: AuthenticatedPremiumReportRoute,
+  AuthenticatedPremiumReviewsRoute: AuthenticatedPremiumReviewsRoute,
+  AuthenticatedPremiumTopicsRoute: AuthenticatedPremiumTopicsRoute,
+  AuthenticatedPremiumIndexRoute: AuthenticatedPremiumIndexRoute,
+}
+
+const AuthenticatedPremiumRouteWithChildren =
+  AuthenticatedPremiumRoute._addFileChildren(AuthenticatedPremiumRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCollegeAdminRoute: typeof AuthenticatedCollegeAdminRoute
   AuthenticatedCompareRoute: typeof AuthenticatedCompareRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedPremiumRoute: typeof AuthenticatedPremiumRouteWithChildren
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
 }
 
@@ -381,6 +540,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCollegeAdminRoute: AuthenticatedCollegeAdminRoute,
   AuthenticatedCompareRoute: AuthenticatedCompareRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedPremiumRoute: AuthenticatedPremiumRouteWithChildren,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
 }
 
