@@ -191,6 +191,19 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
+function Gate({ title, desc, cta }: { title: string; desc: string; cta?: React.ReactNode }) {
+  return (
+    <div className="mx-auto max-w-lg px-6 py-24 text-center">
+      <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand/10 text-brand">
+        <ShieldCheck className="h-6 w-6" />
+      </div>
+      <h1 className="mt-5 text-2xl font-semibold">{title}</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
+      {cta && <div className="mt-6">{cta}</div>}
+    </div>
+  );
+}
+
 function Input({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
     <input
