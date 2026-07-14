@@ -23,6 +23,7 @@ import { useReviews, applyVotes } from "@/lib/edview-store";
 import { useRecentlyViewed } from "@/lib/recently-viewed";
 import { RatingPill, Stars } from "@/components/edview/Stars";
 import { StarRating } from "@/components/edview/StarRating";
+import { SaveCollegeButton } from "@/components/edview/SaveCollegeButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
@@ -256,13 +257,16 @@ function Profile() {
             <div className="rounded-2xl border border-border bg-background p-4 text-center">
               <div className="font-display text-5xl text-brand leading-none">{recPct}%</div>
               <div className="mt-2 text-[11px] uppercase tracking-wider text-muted-foreground">would recommend</div>
-              <Button
-                variant="default"
-                className="mt-3 h-8 w-full text-[11px] rounded-full bg-foreground hover:bg-foreground/90"
-                onClick={() => setShowReviewModal(true)}
-              >
-                <PenLine className="h-3 w-3" /> Review
-              </Button>
+              <div className="mt-3 flex gap-2">
+                <SaveCollegeButton collegeSlug={college.slug} />
+                <Button
+                  variant="default"
+                  className="flex-1 h-8 text-[11px] rounded-full bg-foreground hover:bg-foreground/90"
+                  onClick={() => setShowReviewModal(true)}
+                >
+                  <PenLine className="h-3 w-3" /> Review
+                </Button>
+              </div>
             </div>
           </div>
         </div>

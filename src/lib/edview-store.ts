@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase/client";
 import type { ReviewRow } from "./supabase/types";
-import { type Review } from "./edview-data";
+import { SEED_REVIEWS, type Review } from "./edview-data";
 
 const VOTES_KEY = "edview.votes.v1";
 
@@ -85,7 +85,6 @@ export function useReviews() {
       if (error) {
         // If the reviews table doesn't exist yet, return empty
         if (error.code === "42P01") {
-          console.warn("Supabase 'reviews' table not found. Returning empty.");
           return [];
         }
         throw error;
@@ -96,7 +95,11 @@ export function useReviews() {
     staleTime: 30_000, // 30s before re-fetch
   });
 
-  const allReviews = supabaseReviews;
+  // Always include SEED_REVIEWS (rich local data with pros/cons) plus any
+  // user-submitted reviews from Supabase that don't already exist in seed data.
+  const seedIds = new Set(SEED_REVIEWS.map((r) => r.id));
+  const userReviews = supabaseReviews.filter((r) => !seedIds.has(r.id));
+  const allReviews = [...SEED_REVIEWS, ...userReviews];
 
   // --- Local votes ---
   const [votes, setVotes] = useState<Votes>({});
@@ -118,7 +121,7 @@ export function useReviews() {
   const addReviewMutation = useMutation({
     mutationFn: async (review: Review) => {
       const row = reviewToRow(review);
-      const { data, error } = await supabase.from("reviews").insert(row).select().single();
+      const { data, error } = await supabase.from("reviews").insert(row as never).select().single();
 
       if (error) throw error;
       return rowToReview(data);

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "student" | "college_admin" | "platform_admin";
+export type AppRole = "student" | "college_admin" | "platform_admin" | "super_admin";
 
 export type Profile = {
   id: string;
@@ -80,7 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<AuthState>(() => {
     const primary: AppRole | null =
-      roles.includes("platform_admin") ? "platform_admin"
+      roles.includes("super_admin") ? "super_admin"
+      : roles.includes("platform_admin") ? "platform_admin"
       : roles.includes("college_admin") ? "college_admin"
       : roles.includes("student") ? "student"
       : null;

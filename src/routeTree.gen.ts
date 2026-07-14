@@ -19,6 +19,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CollegesSlugRouteImport } from './routes/colleges.$slug'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
+import { Route as AuthenticatedResourcesRouteImport } from './routes/_authenticated/resources'
 import { Route as AuthenticatedPremiumRouteImport } from './routes/_authenticated/premium'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedCompareRouteImport } from './routes/_authenticated/compare'
@@ -81,6 +82,11 @@ const CollegesSlugRoute = CollegesSlugRouteImport.update({
 const AuthenticatedSavedRoute = AuthenticatedSavedRouteImport.update({
   id: '/saved',
   path: '/saved',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedResourcesRoute = AuthenticatedResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPremiumRoute = AuthenticatedPremiumRouteImport.update({
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/compare': typeof AuthenticatedCompareRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/premium': typeof AuthenticatedPremiumRouteWithChildren
+  '/resources': typeof AuthenticatedResourcesRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/college-admin': typeof AuthenticatedCollegeAdminRoute
   '/compare': typeof AuthenticatedCompareRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/resources': typeof AuthenticatedResourcesRoute
   '/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/_authenticated/compare': typeof AuthenticatedCompareRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/premium': typeof AuthenticatedPremiumRouteWithChildren
+  '/_authenticated/resources': typeof AuthenticatedResourcesRoute
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
   '/colleges/$slug': typeof CollegesSlugRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/compare'
     | '/dashboard'
     | '/premium'
+    | '/resources'
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/college-admin'
     | '/compare'
     | '/dashboard'
+    | '/resources'
     | '/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/_authenticated/compare'
     | '/_authenticated/dashboard'
     | '/_authenticated/premium'
+    | '/_authenticated/resources'
     | '/_authenticated/saved'
     | '/colleges/$slug'
     | '/.mcp/invoke-tool/$tool'
@@ -402,6 +414,13 @@ declare module '@tanstack/react-router' {
       path: '/saved'
       fullPath: '/saved'
       preLoaderRoute: typeof AuthenticatedSavedRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/resources': {
+      id: '/_authenticated/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof AuthenticatedResourcesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/premium': {
@@ -532,6 +551,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCompareRoute: typeof AuthenticatedCompareRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPremiumRoute: typeof AuthenticatedPremiumRouteWithChildren
+  AuthenticatedResourcesRoute: typeof AuthenticatedResourcesRoute
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
 }
 
@@ -541,6 +561,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCompareRoute: AuthenticatedCompareRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPremiumRoute: AuthenticatedPremiumRouteWithChildren,
+  AuthenticatedResourcesRoute: AuthenticatedResourcesRoute,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,
 }
 

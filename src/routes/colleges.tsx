@@ -4,12 +4,16 @@ import { Search, MapPin, ArrowUpRight } from "lucide-react";
 import { COLLEGES, avgOverall } from "@/lib/edview-data";
 import { useReviews } from "@/lib/edview-store";
 import { RatingPill } from "@/components/edview/Stars";
+import { SaveCollegeButton } from "@/components/edview/SaveCollegeButton";
 
 export const Route = createFileRoute("/colleges")({
   head: () => ({
     meta: [
       { title: "Colleges in Kathmandu — EdView" },
-      { name: "description", content: "Browse and compare colleges across Kathmandu with real student ratings." },
+      {
+        name: "description",
+        content: "Browse and compare colleges across Kathmandu with real student ratings.",
+      },
     ],
   }),
   component: Directory,
@@ -66,7 +70,9 @@ function Directory() {
               key={k}
               onClick={() => setSort(k)}
               className={`rounded-lg px-3 py-2 capitalize transition ${
-                sort === k ? "bg-background text-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"
+                sort === k
+                  ? "bg-background text-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {k}
@@ -84,28 +90,28 @@ function Directory() {
             className="group flex items-start gap-5 rounded-2xl border border-border bg-card p-6 transition hover:-translate-y-0.5 hover:shadow-elevated"
           >
             <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand-soft text-lg font-semibold text-brand">
-              {college.name.split(" ").slice(0, 2).map((w) => w[0]).join("")}
+              {college.name
+                .split(" ")
+                .slice(0, 2)
+                .map((w) => w[0])
+                .join("")}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="truncate text-base font-semibold">{college.name}</h3>
-                  <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">{college.tagline}</p>
-                </div>
-                {count > 0 ? <RatingPill value={avg} /> : <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">New</span>}
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="truncate text-base font-semibold">{college.name}</h3>
+                <SaveCollegeButton collegeSlug={college.slug} />
               </div>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {college.programs.slice(0, 3).map((p) => (
-                  <span key={p} className="rounded-full border border-border bg-background px-2.5 py-0.5 text-xs text-muted-foreground">
-                    {p}
+              <div className="mt-2 flex items-center gap-3">
+                {count > 0 ? (
+                  <>
+                    <RatingPill value={avg} />
+                    <span className="text-xs text-muted-foreground">{count} reviews</span>
+                  </>
+                ) : (
+                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs text-muted-foreground">
+                    No reviews yet
                   </span>
-                ))}
-              </div>
-              <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{college.location}</span>
-                <span className="inline-flex items-center gap-1">
-                  {count} reviews <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
+                )}
               </div>
             </div>
           </Link>

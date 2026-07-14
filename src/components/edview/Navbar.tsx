@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { GraduationCap, LogOut, Bookmark, ShieldCheck, Building2, User as UserIcon, Crown } from "lucide-react";
+import { GraduationCap, LogOut, Bookmark, ShieldCheck, Building2, User as UserIcon, Crown, BarChart3, BookOpen } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 
@@ -40,8 +40,8 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           {isAuthenticated && hasRole("student") && <NavLink to="/dashboard">Dashboard</NavLink>}
           <NavLink to="/colleges">All Colleges</NavLink>
+          {isAuthenticated && hasRole("student") && <NavLink to="/resources">Resources</NavLink>}
           {isAuthenticated && hasRole("student") && <NavLink to="/compare">Compare</NavLink>}
-          <NavLink to="/analytics">Analytics</NavLink>
           {isAuthenticated && hasRole("student") && <NavLink to="/saved">Saved</NavLink>}
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/college-admin">Dashboard</NavLink>}
           {isAuthenticated && hasRole("college_admin") && <NavLink to="/premium">Premium</NavLink>}
@@ -68,12 +68,16 @@ export function Navbar() {
                   <MenuLink to="/dashboard" onClick={() => setOpen(false)} icon={<GraduationCap className="h-4 w-4" />}>Dashboard</MenuLink>
                 )}
                 {hasRole("student") && (
+                  <MenuLink to="/resources" onClick={() => setOpen(false)} icon={<BookOpen className="h-4 w-4" />}>Resources</MenuLink>
+                )}
+                {hasRole("student") && (
                   <MenuLink to="/saved" onClick={() => setOpen(false)} icon={<Bookmark className="h-4 w-4" />}>Saved colleges</MenuLink>
                 )}
                 {hasRole("college_admin") && (
                   <>
                     <MenuLink to="/college-admin" onClick={() => setOpen(false)} icon={<Building2 className="h-4 w-4" />}>College dashboard</MenuLink>
                     <MenuLink to="/premium" onClick={() => setOpen(false)} icon={<Crown className="h-4 w-4" />}>Premium dashboard</MenuLink>
+                    <MenuLink to="/analytics" onClick={() => setOpen(false)} icon={<BarChart3 className="h-4 w-4" />}>Analytics</MenuLink>
                   </>
                 )}
                 {hasRole("platform_admin") && (

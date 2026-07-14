@@ -17,7 +17,10 @@ function SavedPage() {
     queryKey: ["saved", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data, error } = await supabase.from("saved_colleges").select("college_slug, created_at").order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from("saved_colleges")
+        .select("college_slug, created_at")
+        .order("created_at", { ascending: false });
       if (error) throw error;
       return data as { college_slug: string; created_at: string }[];
     },
@@ -25,7 +28,12 @@ function SavedPage() {
 
   const remove = useMutation({
     mutationFn: async (slug: string) => {
-      const { error } = await supabase.from("saved_colleges").delete().eq("college_slug", slug);
+      if (!user) throw new Error("Must be signed in");
+      const { error } = await supabase
+        .from("saved_colleges")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("college_slug", slug);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["saved", user?.id] }),
@@ -43,7 +51,9 @@ function SavedPage() {
       <h1 className="mt-3 text-4xl tracking-tight">
         Saved <span className="font-display italic">colleges.</span>
       </h1>
-      <p className="mt-2 text-muted-foreground">Colleges you're keeping an eye on. Compare them side by side anytime.</p>
+      <p className="mt-2 text-muted-foreground">
+        Colleges you're keeping an eye on. Compare them side by side anytime.
+      </p>
 
       {items.length > 1 && (
         <Link
@@ -60,7 +70,10 @@ function SavedPage() {
       ) : items.length === 0 ? (
         <div className="mt-10 rounded-3xl border border-dashed border-border bg-card p-10 text-center">
           <p className="text-sm text-muted-foreground">No saved colleges yet.</p>
-          <Link to="/colleges" className="mt-4 inline-flex h-10 items-center rounded-full bg-brand px-5 text-sm font-medium text-brand-foreground">
+          <Link
+            to="/colleges"
+            className="mt-4 inline-flex h-10 items-center rounded-full bg-brand px-5 text-sm font-medium text-brand-foreground"
+          >
             Browse colleges
           </Link>
         </div>
@@ -70,11 +83,18 @@ function SavedPage() {
             const reviews = SEED_REVIEWS.filter((r) => r.collegeSlug === c.slug);
             const overall = avgOverall(collegeAverages(reviews));
             return (
-              <div key={c.slug} className="flex flex-col rounded-3xl border border-border bg-card p-5 shadow-soft">
+              <div
+                key={c.slug}
+                className="flex flex-col rounded-3xl border border-border bg-card p-5 shadow-soft"
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-xs text-muted-foreground">{c.location}</div>
-                    <Link to="/colleges/$slug" params={{ slug: c.slug }} className="text-lg font-semibold hover:underline">
+                    <Link
+                      to="/colleges/$slug"
+                      params={{ slug: c.slug }}
+                      className="text-lg font-semibold hover:underline"
+                    >
                       {c.name}
                     </Link>
                   </div>

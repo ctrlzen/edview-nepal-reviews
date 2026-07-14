@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { MapPin, ArrowUpRight, Eye } from "lucide-react";
+import { MapPin, ArrowUpRight, Eye, Heart } from "lucide-react";
 import type { College } from "@/lib/edview-data";
 import { RatingPill, Stars } from "@/components/edview/Stars";
+import { useSavedColleges } from "@/hooks/useSavedColleges";
 
 export function CollegeLogo({ college, size = 48 }: { college: College; size?: number }) {
   return (
@@ -67,6 +68,9 @@ export function CollegeCard({
   reviewCount: number;
   verified?: boolean;
 }) {
+  const { savedSlugs, toggleSaved, isSubmitting } = useSavedColleges();
+  const saved = savedSlugs.has(college.slug);
+
   return (
     <Link
       to="/colleges/$slug"
@@ -95,9 +99,25 @@ export function CollegeCard({
       </div>
       <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
         <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{college.location}</span>
-        <span className="inline-flex items-center gap-1">
-          {recPct}% recommend <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleSaved(college.slug);
+            }}
+            disabled={isSubmitting}
+            className={`rounded-full p-1.5 transition ${
+              saved ? "text-red-500 hover:text-red-600" : "text-muted-foreground hover:text-red-500"
+            }`}
+            aria-label={saved ? "Unsave college" : "Save college"}
+          >
+            <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} />
+          </button>
+          <span className="inline-flex items-center gap-1">
+            {recPct}% recommend <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </span>
+        </div>
       </div>
     </Link>
   );

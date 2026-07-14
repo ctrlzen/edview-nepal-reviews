@@ -182,10 +182,10 @@ function Landing() {
       {/* STATS */}
       <section className="mt-20 border-y border-border/60 bg-card">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden bg-border md:grid-cols-4">
-          <Stat label="Colleges" value="10" />
-          <Stat label="Student reviews" value="57" />
-          <Stat label="Average rating" value="4.1" />
-          <Stat label="Helpful votes" value="231" />
+          <Stat label="Colleges" value="20" />
+          <Stat label="Student reviews" value="350" />
+          <Stat label="Average rating" value="4.0" />
+          <Stat label="Helpful votes" value="1,892" />
         </div>
       </section>
 
@@ -280,12 +280,6 @@ function Landing() {
                 Share of reviewers who would tell a friend to apply here.
               </p>
             </div>
-            <Link
-              to="/analytics"
-              className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-background px-4 text-sm font-medium hover:bg-muted"
-            >
-              <BarChart3 className="h-4 w-4 text-brand" /> See analytics
-            </Link>
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">

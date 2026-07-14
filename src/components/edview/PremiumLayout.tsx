@@ -26,7 +26,8 @@ export function usePremiumCollege() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("college_admin_assignments")
-        .select("college_slug, verified");
+        .select("college_slug, verified")
+        .eq("user_id", user!.id);
       if (error) throw error;
       return data as { college_slug: string; verified: boolean }[];
     },
@@ -42,7 +43,7 @@ export function usePremiumCollege() {
 
 export function PremiumLayout() {
   const { loading, hasRole } = useAuth();
-  const { college, isLoading: assignmentsLoading, isPremium } = usePremiumCollege();
+  const { college, reviews, isLoading: assignmentsLoading, isPremium } = usePremiumCollege();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -304,12 +305,14 @@ export function PremiumKpi({
   suffix,
   icon,
   delay = 0,
+  children,
 }: {
   label: string;
   value: number;
   suffix?: string;
   icon: React.ReactNode;
   delay?: number;
+  children?: React.ReactNode;
 }) {
   return (
     <div
@@ -320,9 +323,11 @@ export function PremiumKpi({
         <span>{label}</span>
         <span className="grid h-7 w-7 place-items-center rounded-full bg-brand/10 text-brand">{icon}</span>
       </div>
-      <div className="mt-2 text-3xl font-semibold tracking-tight">
-        {value.toLocaleString()}{suffix}
-      </div>
+      {children ?? (
+        <div className="mt-2 text-3xl font-semibold tracking-tight">
+          {value.toLocaleString()}{suffix}
+        </div>
+      )}
     </div>
   );
 }

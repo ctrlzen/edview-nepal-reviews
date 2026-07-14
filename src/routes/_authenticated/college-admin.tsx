@@ -17,7 +17,10 @@ function CollegeAdminPage() {
     queryKey: ["college-admin-assignments", user?.id],
     enabled: !!user && hasRole("college_admin"),
     queryFn: async () => {
-      const { data, error } = await supabase.from("college_admin_assignments").select("college_slug, verified");
+      const { data, error } = await supabase
+        .from("college_admin_assignments")
+        .select("college_slug, verified")
+        .eq("user_id", user!.id);
       if (error) throw error;
       return data as { college_slug: string; verified: boolean }[];
     },

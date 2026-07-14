@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
-import { Sparkles, CircleCheck as CheckCircle2, Search as SearchIcon, ArrowRight, Quote, ThumbsUp, MapPin } from "lucide-react";
+import { Sparkles, CircleCheck as CheckCircle2, Search as SearchIcon, Quote, ThumbsUp, MapPin } from "lucide-react";
 import { aiSearch, COLLEGES, avgOverall } from "@/lib/edview-data";
 import { AiSearchBar } from "@/components/edview/AiSearchBar";
 import { CollegeLogo } from "@/components/edview/CollegeCards";
@@ -11,7 +11,7 @@ const searchSchema = z.object({ q: z.string().optional() });
 
 export const Route = createFileRoute("/search")({
   validateSearch: searchSchema,
-  head: ({ search }) => ({ meta: [{ title: `${search.q ?? "Search"} — EdView` }] }),
+  head: () => ({ meta: [{ title: "Search - EdView" }] }),
   component: SearchPage,
 });
 
@@ -22,9 +22,11 @@ function SearchPage() {
 
   const [phase, setPhase] = useState<"loading" | "done">("loading");
 
-  // Simulated AI loading sequence
   useEffect(() => {
-    if (!query) { setPhase("done"); return; }
+    if (!query) {
+      setPhase("done");
+      return;
+    }
     setPhase("loading");
     const t = window.setTimeout(() => setPhase("done"), 1100);
     return () => clearTimeout(t);
@@ -51,7 +53,6 @@ function SearchPage() {
         <LoadingState />
       ) : (
         <div className="mt-8 space-y-8 animate-fade-in">
-          {/* AI Summary */}
           {result?.summary && (
             <div className="rounded-2xl border border-border bg-gradient-to-br from-brand-soft/40 to-card p-6 shadow-soft">
               <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-brand">
@@ -61,7 +62,6 @@ function SearchPage() {
             </div>
           )}
 
-          {/* Matching colleges */}
           <section>
             <h2 className="text-lg font-semibold">Matching colleges</h2>
             {result && result.colleges.length > 0 ? (
@@ -81,7 +81,7 @@ function SearchPage() {
                       </div>
                       <p className="mt-0.5 text-xs text-muted-foreground">{college.location}</p>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        <span className="text-brand">{reason}</span> · {recPct}% recommend
+                        <span className="text-brand">{reason}</span> - {recPct}% recommend
                       </p>
                     </div>
                   </Link>
@@ -92,7 +92,6 @@ function SearchPage() {
             )}
           </section>
 
-          {/* Relevant reviews */}
           {result && result.reviews.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold">Relevant reviews</h2>
@@ -106,17 +105,18 @@ function SearchPage() {
                       params={{ slug: college.slug }}
                       className="block rounded-2xl border border-border bg-card p-5 shadow-soft transition hover:shadow-elevated"
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <MapPin className="h-3 w-3" /> {college.name} · {r.program}
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+                          <MapPin className="h-3 w-3 shrink-0" />
+                          <span className="truncate">{college.name} - {r.program}</span>
                         </span>
                         <Stars value={avgOverall(r.ratings)} size={12} />
                       </div>
                       <Quote className="mt-3 h-4 w-4 text-brand/60" />
                       <h3 className="mt-1 text-sm font-semibold">{r.title}</h3>
                       <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">"{r.body}"</p>
-                      <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                        <span>— {r.author}, Class of {r.year}</span>
+                      <div className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                        <span className="min-w-0 truncate">- {r.author}, Class of {r.year}</span>
                         <span className="inline-flex items-center gap-1"><ThumbsUp className="h-3 w-3" /> {r.helpful}</span>
                       </div>
                     </Link>
@@ -126,7 +126,6 @@ function SearchPage() {
             </section>
           )}
 
-          {/* Related searches */}
           {result && result.related.length > 0 && (
             <section>
               <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Related searches</h2>
@@ -153,7 +152,7 @@ function EmptyState() {
   return (
     <div className="mt-10 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
       <Sparkles className="mx-auto h-8 w-8 text-brand/60" />
-      <p className="mt-3 text-sm text-muted-foreground">Ask anything about Kathmandu's colleges — programs, academics, placements, value.</p>
+      <p className="mt-3 text-sm text-muted-foreground">Ask anything about Kathmandu's colleges: programs, academics, placements, value.</p>
     </div>
   );
 }
@@ -172,7 +171,7 @@ function LoadingState() {
             className="flex items-center gap-2.5 text-sm animate-fade-in-up"
             style={{ animationDelay: `${i * 0.25}s` }}
           >
-            <CheckCircle2 className="h-4 w-4 text-brand" /> ✓ {s}
+            <CheckCircle2 className="h-4 w-4 text-brand" /> {s}
           </li>
         ))}
       </ul>
@@ -182,5 +181,3 @@ function LoadingState() {
     </div>
   );
 }
-
-void ArrowRight;
